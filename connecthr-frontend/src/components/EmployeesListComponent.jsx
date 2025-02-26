@@ -11,7 +11,7 @@ function EmployeesListComponent() {
             <th>Employee ID</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Email ID</th>
+            <th>Email Address</th>
           </tr>
         </thead>
       </table>
