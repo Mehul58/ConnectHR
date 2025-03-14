@@ -6,6 +6,13 @@ const EmployeeComponent = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
+
   const navigator = useNavigate();
 
   function handleFirstName(e) {
@@ -23,12 +30,42 @@ const EmployeeComponent = () => {
   function saveEmployee(e) {
     e.preventDefault();
 
-    const employee = { firstName, lastName, email };
+    if (validateForm()) {
+      const employee = { firstName, lastName, email };
 
-    createEmployee(employee).then((response) => {
-      console.log(response.data);
-      navigator("/employees");
-    });
+      createEmployee(employee).then((response) => {
+        console.log(response.data);
+        navigator("/employees");
+      });
+    }
+  }
+
+  function validateForm() {
+    const errorsCopy = { ...errors };
+    let valid = true;
+
+    if (firstName.trim()) {
+      errorsCopy.firstName = "";
+    } else {
+      errorsCopy.firstName = "First name is required";
+      valid = false;
+    }
+
+    if (lastName.trim()) {
+      errorsCopy.lastName = "";
+    } else {
+      errorsCopy.lastName = "Last name is required";
+      valid = false;
+    }
+
+    if (email.trim()) {
+      errorsCopy.email = "";
+    } else {
+      errorsCopy.email = "Email ID is required";
+      valid = false;
+    }
+    setErrors(errorsCopy);
+    return valid;
   }
 
   return (
@@ -47,9 +84,14 @@ const EmployeeComponent = () => {
                   placeholder="Enter First Name"
                   name="firstName"
                   value={firstName}
-                  className="form-control"
+                  className={`form-control ${
+                    errors.firstName ? "is-invalid" : ""
+                  }`}
                   onChange={handleFirstName}
                 ></input>
+                {errors.firstName && (
+                  <div className="invalid-feedback">{errors.firstName}</div>
+                )}
               </div>
 
               <div className="form-group mb-2">
@@ -59,9 +101,14 @@ const EmployeeComponent = () => {
                   placeholder="Enter Last Name"
                   name="lastName"
                   value={lastName}
-                  className="form-control"
+                  className={`form-control ${
+                    errors.lastName ? "is-invalid" : ""
+                  }`}
                   onChange={handleLastName}
                 ></input>
+                {errors.lastName && (
+                  <div className="invalid-feedback">{errors.lastName}</div>
+                )}
               </div>
 
               <div className="form-group mb-2">
@@ -71,10 +118,13 @@ const EmployeeComponent = () => {
                   placeholder="Enter Email ID"
                   name="email"
                   value={email}
-                  className="form-control"
+                  className={`form-control ${errors.email ? "is-invalid" : ""}`}
                   onChange={handleEmail}
                 ></input>
               </div>
+              {errors.email && (
+                <div className="invalid-feedback">{errors.email}</div>
+              )}
 
               <button className="btn btn-success" onClick={saveEmployee}>
                 Submit
